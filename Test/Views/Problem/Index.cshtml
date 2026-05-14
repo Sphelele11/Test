@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Test.Models.Problem>
+@{
+    ViewData["Title"] = "Problems";
+}
+
+<div class="page-header">
+    <div><div class="page-title">Problems</div><div class="page-subtitle">Known errors and root cause investigations</div></div>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> New Problem</a>
+</div>
+<div class="filter-bar">
+    <form method="get" class="d-flex gap-2 flex-wrap align-items-center w-100">
+        <input type="text" name="search" class="form-control" placeholder="Search..." style="max-width:220px" />
+        <select name="status" class="form-select" style="max-width:200px">
+            <option value="">All Status</option>
+            @foreach (var s in Enum.GetNames<Test.Models.ProblemStatus>())
+            {
+                <option value="@s">@s</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        <a asp-action="Index" class="btn btn-secondary btn-sm">Clear</a>
+    </form>
+</div>
+<div class="card">
+    <table class="table">
+        <thead><tr><th>Ticket</th><th>Title</th><th>Priority</th><th>Status</th><th>Assigned To</th><th>Root Cause</th><th>Created</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td><span class="fw-mono" style="font-size:12px;color:var(--primary)">@p.TicketNumber</span></td>
+                    <td><a asp-action="Details" asp-route-id="@p.Id" style="color:var(--text);font-weight:500">@p.Title</a></td>
+                    <td><span class="badge badge-@p.Priority.ToString().ToLower()">@p.Priority</span></td>
+                    <td><span class="badge badge-@p.Status.ToString().ToLower()">@p.Status</span></td>
+                    <td style="font-size:12.5px;color:var(--text-muted)">@(p.AssignedTo ?? "—")</td>
+                    <td style="font-size:12.5px;color:var(--text-muted)">@(string.IsNullOrEmpty(p.RootCause) ? "Investigating..." : "✓ Identified")</td>
+                    <td style="font-size:12px;color:var(--text-muted)">@p.CreatedAt.ToLocalTime().ToString("MM/dd/yy")</td>
+                    <td><div class="d-flex gap-1"><a asp-action="Details" asp-route-id="@p.Id" class="btn btn-secondary btn-sm">View</a><a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-secondary btn-sm">Edit</a></div></td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr><td colspan="8"><div class="empty-state"><i class="bi bi-bug"></i><p>No problems found</p></div></td></tr>
+            }
+        </tbody>
+    </table>
+</div>

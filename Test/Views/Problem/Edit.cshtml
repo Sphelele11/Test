@@ -1,0 +1,83 @@
+﻿@* ===== Views/Incident/Index.cshtml ===== *@
+@model IEnumerable<Test.Models.Incident>
+@{
+    ViewData["Title"] = "Incidents";
+}
+
+<div class="page-header">
+    <div>
+        <div class="page-title">Incidents</div>
+        <div class="page-subtitle">@ViewBag.Total total incidents</div>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> New Incident</a>
+</div>
+
+<div class="filter-bar">
+    <form method="get" class="d-flex gap-2 flex-wrap align-items-center w-100">
+        <input type="text" name="search" class="form-control" placeholder="Search..." value="@ViewBag.Search" style="max-width:220px" />
+        <select name="status" class="form-select" style="max-width:150px">
+            <option value="">All Status</option>
+            @foreach (var s in Enum.GetNames<Test.Models.IncidentStatus>())
+            { <option value="@s" selected="@(ViewBag.Status == s)">@s</option> }
+        </select>
+        <select name="priority" class="form-select" style="max-width:140px">
+            <option value="">All Priority</option>
+            @foreach (var p in Enum.GetNames<Test.Models.Priority>())
+            { <option value="@p" selected="@(ViewBag.Priority == p)">@p</option> }
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+        <a asp-action="Index" class="btn btn-secondary btn-sm">Clear</a>
+    </form>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ticket</th><th>Title</th><th>Category</th>
+                    <th>Priority</th><th>Status</th><th>Assigned To</th>
+                    <th>SLA Due</th><th>Created</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var inc in Model)
+                {
+                    var slaClass = inc.SLADueDate < DateTime.UtcNow ? "sla-breach" : inc.SLADueDate < DateTime.UtcNow.AddHours(2) ? "sla-warning" : "sla-ok";
+                    <tr>
+                        <td><span class="fw-mono" style="font-size:12px;color:var(--primary)">@inc.TicketNumber</span></td>
+                        <td style="max-width:260px">
+                            <a asp-action="Details" asp-route-id="@inc.Id" style="color:var(--text);font-weight:500">@inc.Title</a>
+                        </td>
+                        <td><span style="font-size:12.5px;color:var(--text-muted)">@inc.Category</span></td>
+                        <td><span class="badge badge-@inc.Priority.ToString().ToLower()">@inc.Priority</span></td>
+                        <td><span class="badge badge-@inc.Status.ToString().ToLower()">@inc.Status</span></td>
+                        <td style="font-size:12.5px;color:var(--text-muted)">@(inc.AssignedTo ?? "Unassigned")</td>
+                        <td><span class="@slaClass" style="font-size:12px">@inc.SLADueDate.ToLocalTime().ToString("MM/dd HH:mm")</span></td>
+                        <td style="font-size:12px;color:var(--text-muted)">@inc.CreatedAt.ToLocalTime().ToString("MM/dd HH:mm")</td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a asp-action="Details" asp-route-id="@inc.Id" class="btn btn-secondary btn-sm">View</a>
+                                <a asp-action="Edit" asp-route-id="@inc.Id" class="btn btn-secondary btn-sm">Edit</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9"><div class="empty-state"><i class="bi bi-inbox"></i><p>No incidents found</p></div></td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (ViewBag.Total > ViewBag.PageSize)
+    {
+        <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;">
+            @for (int i = 1; i <= Math.Ceiling((double)ViewBag.Total / ViewBag.PageSize); i++)
+            {
+                <a asp-action="Index" asp-route-page="@i" asp-route-search="@ViewBag.Search" asp-route-status="@ViewBag.Status" asp-route-priority="@ViewBag.Priority"
+                   class="btn @(i == ViewBag.Page ? "btn-primary" : "btn-secondary") btn-sm">@i</a>
+            }
+        </div>
+    }
+</div>

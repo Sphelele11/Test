@@ -20,7 +20,6 @@
 	  <Folder Include="Views\Asset\" />
 	  <Folder Include="Views\Knowledge\" />
 	  <Folder Include="Views\ServiceRequest\" />
-	  <Folder Include="Views\Problem\" />
 	</ItemGroup>
 
 </Project>
