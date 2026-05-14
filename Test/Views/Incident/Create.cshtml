@@ -32,15 +32,15 @@
             <div class="row g-3 mb-3">
                 <div class="col-md-4">
                     <label class="form-label">Priority</label>
-                    <select asp-for="Priority" class="form-select" asp-items="Html.GetEnumSelectList<ITSM.Models.Priority>()"></select>
+                    <select asp-for="Priority" class="form-select" asp-items="Html.GetEnumSelectList<Test.Models.Priority>()"></select>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Category</label>
-                    <select asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<ITSM.Models.Category>()"></select>
+                    <select asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<Test.Models.Category>()"></select>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Status</label>
-                    <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<ITSM.Models.IncidentStatus>()"></select>
+                    <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<Test.Models.IncidentStatus>()"></select>
                 </div>
             </div>
 
