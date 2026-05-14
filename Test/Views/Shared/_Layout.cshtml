@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — ITSM Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Test.styles.css" asp-append-version="true" />
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="bi bi-shield-check"></i>
+                <span>ITSM Portal</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Main</div>
+            <a asp-controller="Home" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
+                <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+            </a>
+
+            <div class="nav-section-label">Operations</div>
+            <a asp-controller="Incident" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Incident" ? "active" : "")">
+                <i class="bi bi-exclamation-triangle"></i><span>Incidents</span>
+                <span class="nav-badge" id="badge-incidents"></span>
+            </a>
+            <a asp-controller="Problem" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Problem" ? "active" : "")">
+                <i class="bi bi-bug"></i><span>Problems</span>
+            </a>
+            <a asp-controller="Change" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Change" ? "active" : "")">
+                <i class="bi bi-arrow-repeat"></i><span>Changes</span>
+            </a>
+            <a asp-controller="ServiceRequest" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ServiceRequest" ? "active" : "")">
+                <i class="bi bi-clipboard-check"></i><span>Service Requests</span>
+            </a>
+
+            <div class="nav-section-label">Resources</div>
+            <a asp-controller="Asset" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Asset" ? "active" : "")">
+                <i class="bi bi-hdd-stack"></i><span>Assets (CMDB)</span>
+            </a>
+            <a asp-controller="Knowledge" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Knowledge" ? "active" : "")">
+                <i class="bi bi-book"></i><span>Knowledge Base</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="user-info">
+                    <div class="user-avatar">@(User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U")</div>
+                    <div class="user-details">
+                        <div class="user-name">@User.Identity.Name</div>
+                        <a asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")" class="logout-link">Sign out</a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="topbar">
+            <button class="btn btn-icon" id="sidebarToggle">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="breadcrumb-nav">
+                @RenderSection("Breadcrumb", required: false)
+            </div>
+            <div class="topbar-actions">
+                <a asp-controller="Incident" asp-action="Create" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus"></i> New Ticket
+                </a>
+            </div>
+        </div>
+
+        <div class="page-content">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                    <i class="bi bi-x-circle me-2"></i>@TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

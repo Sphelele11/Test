@@ -1,0 +1,69 @@
+﻿@* ===== Views/Incident/Create.cshtml ===== *@
+@model Test.Models.Incident
+@{
+    ViewData["Title"] = "New Incident";
+}
+
+<div class="page-header">
+    <div>
+        <a asp-action="Index" class="btn btn-secondary btn-sm mb-2"><i class="bi bi-arrow-left"></i> Back</a>
+        <div class="page-title">Create Incident</div>
+    </div>
+</div>
+
+<div class="card" style="max-width:720px">
+    <div class="card-header"><div class="card-title">Incident Information</div></div>
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="display:none"></div>
+
+            <div class="mb-3">
+                <label class="form-label">Title <span class="text-danger">*</span></label>
+                <input asp-for="Title" class="form-control" placeholder="Brief description of the issue" required />
+                <span asp-validation-for="Title" class="text-danger" style="font-size:12px"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Description <span class="text-danger">*</span></label>
+                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Detailed description of the incident..." required></textarea>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Priority</label>
+                    <select asp-for="Priority" class="form-select" asp-items="Html.GetEnumSelectList<ITSM.Models.Priority>()"></select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Category</label>
+                    <select asp-for="Category" class="form-select" asp-items="Html.GetEnumSelectList<ITSM.Models.Category>()"></select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Status</label>
+                    <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<ITSM.Models.IncidentStatus>()"></select>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Reported By</label>
+                    <input asp-for="ReportedBy" class="form-control" placeholder="user@company.com" />
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Assign To</label>
+                    <input asp-for="AssignedTo" class="form-control" placeholder="agent@company.com" />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Affected System</label>
+                <input asp-for="AffectedSystem" class="form-control" placeholder="e.g. Exchange Server, VPN, SAP" />
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-circle"></i> Create Incident</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
